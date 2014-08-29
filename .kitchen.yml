@@ -1,0 +1,19 @@
+---
+driver_plugin: vagrant
+driver:
+  require_chef_omnibus: true
+  network:
+    - ["private_network", {ip: "10.3.0.2",auto_config: false}]
+
+provisioner: chef_zero
+
+platforms:
+  - name: ubuntu-12.04
+
+suites:
+  - name: default
+    attributes:
+      scpr_externalnet:
+        ip: 205.144.162.131
+    run_list:
+      - "recipe[scpr-externalnet]"

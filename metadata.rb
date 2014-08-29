@@ -1,0 +1,10 @@
+name             "scpr-externalnet"
+maintainer       "Eric Richardson"
+maintainer_email "e@ewr.is"
+license          "BSD"
+description      "Configure eth1 for Externally-connected Hosts"
+long_description ""
+version          "0.0.5"
+
+depends "network_interfaces"
+depends "iptables-ng"
