@@ -9,7 +9,10 @@ if node.scpr_externalnet.ip
     raise "Cannot run scpr_externalnet with external interface in accept_interfaces."
   end
 
-  block = node.scpr_externalnet.block
+  # I was setting the 'block' attribute on all of the new nodes, but then
+  # I got sick of doing that, so here we are. If you see a "block" attribute on
+  # a node's externalnet config, you can remove it.
+  block = node.scpr_externalnet.ip.match(/\A\d+\.\d+\.162\.\d+\z/) ? 1 : 2
 
   # enable the interface
   network_interfaces node.scpr_externalnet.interface do

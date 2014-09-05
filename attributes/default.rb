@@ -4,8 +4,6 @@ default.scpr_externalnet.udp_ports  = []
 
 default.scpr_externalnet.interface  = "eth1"
 
-default.scpr_externalnet.block = 1
-
 default.scpr_externalnet.block1.gateway    = "205.144.162.129"
 default.scpr_externalnet.block1.netmask    = "255.255.255.224"
 default.scpr_externalnet.block1.broadcast  = "205.144.162.159"
