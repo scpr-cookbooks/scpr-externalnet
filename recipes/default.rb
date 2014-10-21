@@ -14,12 +14,26 @@ if node.scpr_externalnet.ip
   # a node's externalnet config, you can remove it.
   block = node.scpr_externalnet.ip.match(/\A\d+\.\d+\.162\.\d+\z/) ? 1 : 2
 
+  # write our up script
+  template "/etc/network/scpr-ifup-#{ node.scpr_externalnet.interface }.sh" do
+    action    :create
+    source    "scpr-ifup.sh.erb"
+    variables({
+      interface:  node.scpr_externalnet.interface,
+      ip:         node.scpr_externalnet.ip,
+      gateway:    node['scpr_externalnet']["block#{block}"]['gateway'],
+      localnet:   node['scpr_externalnet']["block#{block}"]['localnet'],
+    })
+    mode      0755
+  end
+
   # enable the interface
   network_interfaces node.scpr_externalnet.interface do
     target    node['scpr_externalnet']['ip']
     gateway   node['scpr_externalnet']["block#{block}"]['gateway']
     broadcast node['scpr_externalnet']["block#{block}"]['broadcast']
     mask      node['scpr_externalnet']["block#{block}"]['netmask']
+    post_up   "/etc/network/scpr-ifup-#{ node.scpr_externalnet.interface }.sh"
   end
 
   # set up iptables
@@ -81,6 +95,11 @@ if node.scpr_externalnet.ip
 
 else
   # make sure we're disabled?
+  network_interfaces node.scpr_externalnet.interface do
+    action :remove
+  end
 
-
+  template "/etc/network/scpr-ifup-#{ node.scpr_externalnet.interface }.sh" do
+    action :remove
+  end
 end

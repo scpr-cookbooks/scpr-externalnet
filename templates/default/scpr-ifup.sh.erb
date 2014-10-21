@@ -1,0 +1,8 @@
+#!/bin/bash
+
+grep "scpr-ext" /etc/iproute2/rt_tables || echo "100 scpr-ext" >> /etc/iproute2/rt_tables
+
+ip route del default dev <%= @interface %>
+ip route add default via <%= @gateway %> dev <%= @interface %> table scpr-ext
+ip route add <%= @localnet %> dev <%= @interface %> table scpr-ext
+ip rule add from <%= @ip %> lookup scpr-ext
