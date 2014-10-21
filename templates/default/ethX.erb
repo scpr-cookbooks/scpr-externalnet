@@ -1,0 +1,13 @@
+auto <%= @interface %>
+iface <%= @interface %> inet static
+  address <%= @ip %>
+  netmask <%= @netmask %>
+  broadcast <%= @broadcast %>
+
+  up ip route add default via <%= @gateway %> dev <%= @interface %> table scpr-ext
+  up ip route add <%= @localnet %> dev <%= @interface %> table scpr-ext
+  up ip rule add from <%= @ip %> lookup scpr-ext
+
+  down ip route del default via <%= @gateway %> dev <%= @interface %> table scpr-ext
+  down ip route del <%= @localnet %> dev <%= @interface %> table scpr-ext
+  down ip rule del from <%= @ip %> lookup scpr-ext
