@@ -2,7 +2,7 @@
 # second interface for a given public IP address and set up a firewall,
 # allowing only the ports specified in the whitelist.
 
-#include_recipe "network_interfaces"
+require "ipaddr"
 
 if node.scpr_externalnet.ip
   if node.scpr_externalnet.accept_interfaces.include?(node.scpr_externalnet.interface)
@@ -21,10 +21,18 @@ if node.scpr_externalnet.ip
     not_if  "grep 'scpr-ext' /etc/iproute2/rt_tables"
   end
 
-  # I was setting the 'block' attribute on all of the new nodes, but then
-  # I got sick of doing that, so here we are. If you see a "block" attribute on
-  # a node's externalnet config, you can remove it.
-  block = node.scpr_externalnet.ip.match(/\A\d+\.\d+\.162\.\d+\z/) ? 1 : 2
+  blocks = node.scpr_externalnet.subnets.collect { |k,v| v.merge({ localnet:k, net:IPAddr.new(k) }) }
+
+  ip_matches = []
+  [node.scpr_externalnet.ip].flatten().each do |ip|
+    b = blocks.detect { |b| b[:net].include?(ip) }
+
+    if b
+      ip_matches << Hashie::Mash.new({ ip:ip, subnet:b })
+    else
+      raise "scpr-externalnet: IP doesn't match any configured subnets—#{ ip }"
+    end
+  end
 
   if_file = "/etc/network/interfaces.d/#{node.scpr_externalnet.interface}"
 
@@ -45,11 +53,7 @@ if node.scpr_externalnet.ip
     source    "ethX.erb"
     variables({
       interface:  node.scpr_externalnet.interface,
-      ip:         node.scpr_externalnet.ip,
-      gateway:    node['scpr_externalnet']["block#{block}"]['gateway'],
-      localnet:   node['scpr_externalnet']["block#{block}"]['localnet'],
-      broadcast:  node['scpr_externalnet']["block#{block}"]['broadcast'],
-      netmask:    node['scpr_externalnet']["block#{block}"]['netmask'],
+      ips:        ip_matches,
     })
     mode      0755
     notifies  :run, if_up, :immediately
@@ -113,7 +117,6 @@ if node.scpr_externalnet.ip
   end
 
 else
-
 
   # make sure we're disabled?
   #network_interfaces node.scpr_externalnet.interface do

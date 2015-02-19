@@ -1,13 +1,25 @@
 auto <%= @interface %>
+
+<% ip0 = @ips[0] %>
+
 iface <%= @interface %> inet static
-  address <%= @ip %>
-  netmask <%= @netmask %>
-  broadcast <%= @broadcast %>
+  address <%= ip0.ip %>
+  netmask <%= ip0.subnet.netmask %>
+  broadcast <%= ip0.subnet.broadcast %>
 
-  up ip route add default via <%= @gateway %> dev <%= @interface %> table scpr-ext
-  up ip route add <%= @localnet %> dev <%= @interface %> table scpr-ext
-  up ip rule add from <%= @ip %> lookup scpr-ext
+  up ip route add default via <%= ip0.subnet.gateway %> dev <%= @interface %> table scpr-ext
+  up ip route add <%= ip0.subnet.localnet %> dev <%= @interface %> table scpr-ext
+  up ip rule add from <%= ip0.ip %> lookup scpr-ext
 
-  down ip route del default via <%= @gateway %> dev <%= @interface %> table scpr-ext
-  down ip route del <%= @localnet %> dev <%= @interface %> table scpr-ext
-  down ip rule del from <%= @ip %> lookup scpr-ext
+  down ip route del default via <%= ip0.subnet.gateway %> dev <%= @interface %> table scpr-ext
+  down ip route del <%= ip0.subnet.localnet %> dev <%= @interface %> table scpr-ext
+  down ip rule del from <%= ip0.ip %> lookup scpr-ext
+
+<% for eip in @ips[1..-1] %>
+iface <%= @interface %> inet static
+  address <%= eip.ip %>
+  netmask <%= eip.subnet.netmask %>
+
+  up ip rule add from <%= eip.ip %> lookup scpr-ext
+  down ip rule del from <%= eip.ip %> lookup scpr-ext
+<% end %>

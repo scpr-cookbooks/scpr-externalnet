@@ -17,3 +17,9 @@ suites:
         ip: 205.144.162.131
     run_list:
       - "recipe[scpr-externalnet]"
+  - name: multiple
+    attributes:
+      scpr_externalnet:
+        ip: [205.144.162.131,205.144.162.132]
+    run_list:
+      - "recipe[scpr-externalnet]"

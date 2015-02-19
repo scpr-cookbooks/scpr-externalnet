@@ -4,15 +4,16 @@ default.scpr_externalnet.udp_ports  = []
 
 default.scpr_externalnet.interface  = "eth1"
 
-default.scpr_externalnet.block1.gateway    = "205.144.162.129"
-default.scpr_externalnet.block1.netmask    = "255.255.255.224"
-default.scpr_externalnet.block1.broadcast  = "205.144.162.159"
-default.scpr_externalnet.block1.localnet   = "205.144.162.128/27"
+default.scpr_externalnet.subnets["205.144.162.128/27"] = {
+  gateway:    "205.144.162.129",
+  netmask:    "255.255.255.224",
+  broadcast:  "205.144.162.159",
+}
 
-default.scpr_externalnet.block2.gateway    = "205.144.168.161"
-default.scpr_externalnet.block2.netmask    = "255.255.255.224"
-default.scpr_externalnet.block2.broadcast  = "205.144.168.191"
-default.scpr_externalnet.block2.localnet   = "205.144.162.160/27"
-
+default.scpr_externalnet.subnets["205.144.162.160/27"] = {
+  gateway:    "205.144.168.161",
+  netmask:    "255.255.255.224",
+  broadcast:  "205.144.168.191",
+}
 
 default.scpr_externalnet.accept_interfaces = ["lo","eth0"]
