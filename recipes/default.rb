@@ -28,7 +28,7 @@ if node.scpr_externalnet.ip
     b = blocks.detect { |b| b[:net].include?(ip) }
 
     if b
-      ip_matches << Hashie::Mash.new({ ip:ip, subnet:b })
+      ip_matches << { ip:ip, subnet:b }
     else
       raise "scpr-externalnet: IP doesn't match any configured subnets—#{ ip }"
     end
