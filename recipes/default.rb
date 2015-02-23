@@ -30,7 +30,7 @@ if node.scpr_externalnet.ip
     if b
       ip_matches << { ip:ip, subnet:b }
     else
-      raise "scpr-externalnet: IP doesn't match any configured subnets—#{ ip }"
+      raise "scpr-externalnet: IP doesn't match any configured subnets -- #{ ip }"
     end
   end
 

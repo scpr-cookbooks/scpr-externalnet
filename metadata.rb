@@ -4,6 +4,6 @@ maintainer_email "e@ewr.is"
 license          "BSD"
 description      "Configure eth1 for externally-connected hosts"
 long_description ""
-version          "0.2.0"
+version          "0.2.1"
 
 depends "iptables-ng"
