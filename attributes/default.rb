@@ -10,7 +10,7 @@ default.scpr_externalnet.subnets["205.144.162.128/27"] = {
   broadcast:  "205.144.162.159",
 }
 
-default.scpr_externalnet.subnets["205.144.162.160/27"] = {
+default.scpr_externalnet.subnets["205.144.168.160/27"] = {
   gateway:    "205.144.168.161",
   netmask:    "255.255.255.224",
   broadcast:  "205.144.168.191",
